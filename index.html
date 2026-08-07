@@ -233,7 +233,7 @@
             <p>The five ranked recommendations will appear here after Run All.</p>
             <div class="stage" data-n="5">Review</div>
             <p class="boundary-note">Nothing is sent without human approval.</p>
-            <p>Approve, edit, or escalate all five recommendations to create the approved-message export.</p>
+            <p>Each approved recommendation is added to the Instagram DM export immediately.</p>
           </div>
         </section>
 
@@ -2472,24 +2472,20 @@ Return only valid JSON with exactly these fields:
       if (!progress || !exportPanel || !CURRENT_TOP_FIVE.length) return;
       const reviewedCount = CURRENT_TOP_FIVE.filter(record => HUMAN_REVIEW_STATE.has(record.instagram_handle)).length;
       progress.textContent = reviewedCount + " of " + CURRENT_TOP_FIVE.length + " recommendations reviewed";
-      exportPanel.hidden = reviewedCount !== CURRENT_TOP_FIVE.length;
-      if (exportPanel.hidden) return;
+      const approved = CURRENT_TOP_FIVE.filter(record => HUMAN_REVIEW_STATE.get(record.instagram_handle)?.status === "approved");
+      exportPanel.hidden = approved.length === 0;
+      if (exportPanel.hidden) {
+        exportPanel.replaceChildren();
+        return;
+      }
 
       exportPanel.replaceChildren();
       const heading = document.createElement("h3");
       heading.textContent = "Approved Instagram DM export";
       const note = document.createElement("p");
       note.className = "boundary-note";
-      note.textContent = "Copy only. Nothing is sent from this prototype.";
+      note.textContent = approved.length + " approved of " + CURRENT_TOP_FIVE.length + ". Copy only. Nothing is sent from this prototype.";
       exportPanel.append(heading, note);
-
-      const approved = CURRENT_TOP_FIVE.filter(record => HUMAN_REVIEW_STATE.get(record.instagram_handle)?.status === "approved");
-      if (!approved.length) {
-        const empty = document.createElement("p");
-        empty.textContent = "All five were reviewed, but none are approved for export.";
-        exportPanel.appendChild(empty);
-        return;
-      }
 
       approved.forEach(record => {
         const block = document.createElement("div");
