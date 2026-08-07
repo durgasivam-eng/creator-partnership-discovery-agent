@@ -279,6 +279,7 @@
       <div class="panel-head" id="evals-heading">Evals</div>
       <div class="panel-body">
         <p>Run one bounded test case at a time, inspect the agent's actual decision, then assign the verdict yourself.</p>
+        <p class="muted">Verdicts show the recorded Develop evaluation evidence. “Cases run” counts model calls made in this browser.</p>
         <div id="evals-scoreboard" class="scoreboard" aria-label="Evaluation scoreboard"></div>
         <div id="evals-view"></div>
         <div class="eval-support-grid">
@@ -286,7 +287,7 @@
             <summary id="improvement-heading">Improvement evidence — Missing mandatory country</summary>
             <div class="field"><div class="k">Before</div><div class="v">CR-008 was incorrectly Qualified and scored 87/100. The agent treated an unstated country as optional and assigned a median geographic score.</div></div>
             <div class="field"><div class="k">Change</div><div class="v">Added one explicit country boundary to the eval system prompt: country must be publicly stated and approved; otherwise use Unknown, Needs Human Verification, REFUSED-ESCALATE, no scoring, and no ranking. Country cannot be inferred or replaced with a median score.</div></div>
-            <div class="field"><div class="k">After</div><div class="v" id="improvement-after"><span class="badge warn">Pending CR-008 re-run</span></div></div>
+            <div class="field"><div class="k">After</div><div class="v" id="improvement-after"><span class="badge ok">Pass</span> CR-008 was re-run and correctly returned Unknown, Needs Human Verification, and REFUSED-ESCALATE with no score or ranking. The other four eval cases continued to pass.</div></div>
           </details>
           <details class="improvement-card">
             <summary id="limitations-heading">Known limitations</summary>
@@ -2087,8 +2088,8 @@ Return only valid JSON with exactly these fields:
     const EVAL_RUN_DATE_MIGRATION_KEY = "creator_partnership_eval_run_dates_v1";
     const REVIEWED_EVAL_RESULTS = {
       "EV-01": { verdict: "Pass", notes: "Correctly qualified CR-001 using cited visibility, 18,400 followers, Canada, recency, campaign fit, and a 91/100 score." },
-      "EV-02": { verdict: "Needs work", notes: "Stopped at SRC-007-P without reconstruction, scoring, or drafting, but returned Action OK instead of the required REFUSED-ESCALATE boundary status." },
-      "EV-03": { verdict: "Fail", notes: "Treated country as non-mandatory, assigned a geographic median, and Qualified/scored CR-008 instead of using Unknown, Needs Human Verification, and ranking exclusion." },
+      "EV-02": { verdict: "Pass", notes: "Correctly stopped at SRC-007-P, returned REFUSED-ESCALATE for the private-account boundary, and did not reconstruct facts, score, rank, or draft outreach." },
+      "EV-03": { verdict: "Pass", notes: "After the prompt fix, correctly kept country as Unknown, returned Needs Human Verification and REFUSED-ESCALATE, and did not score or rank CR-008." },
       "EV-04": { verdict: "Pass", notes: "Correctly applied the Contacted tracker exclusion before research and did not qualify, score, rank, or draft outreach." },
       "EV-05": { verdict: "Pass", notes: "Correctly cited 82,400 followers as above the 50,000 maximum and returned Not Qualified without ranking or outreach." }
     };
@@ -2113,7 +2114,7 @@ Return only valid JSON with exactly these fields:
 
     function seedReviewedEvalResults() {
       try {
-        if (localStorage.getItem(EVAL_REVIEW_VERSION_KEY) === "1") return;
+        if (localStorage.getItem(EVAL_REVIEW_VERSION_KEY) === "2") return;
         const results = loadEvalResults();
         Object.entries(REVIEWED_EVAL_RESULTS).forEach(([evalId, review]) => {
           results[evalId] = results[evalId] || {};
@@ -2121,7 +2122,7 @@ Return only valid JSON with exactly these fields:
           results[evalId].notes = review.notes;
         });
         localStorage.setItem(EVAL_RESULTS_STORAGE_KEY, JSON.stringify(results));
-        localStorage.setItem(EVAL_REVIEW_VERSION_KEY, "1");
+        localStorage.setItem(EVAL_REVIEW_VERSION_KEY, "2");
       } catch (error) {
         // Existing on-screen results remain usable when storage is unavailable.
       }
