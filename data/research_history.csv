@@ -1,0 +1,6 @@
+creator_id,instagram_handle,original_input_order,qualification_status,total_score,product_campaign_fit_score,tamil_cultural_alignment_score,geographic_diversity_score,founder_status,eligible_for_ranking,last_reviewed_date
+HIST-001,@heritage.hummingbird,3,Qualified,91,28,24,14,Approved,No,2026-07-14
+HIST-002,@maple.mozhi,18,Qualified,84,26,23,12,Pending Review,Yes,2026-07-28
+HIST-003,@little.lotus.library,27,Qualified,81,25,22,11,Pending Review,Yes,2026-07-28
+HIST-004,@tiny.tiffin.library,8,Qualified,79,23,21,13,Completed,No,2026-03-22
+HIST-005,@rainyday.ragas,14,Needs Human Verification,,18,20,10,Do not contact,No,2026-04-09

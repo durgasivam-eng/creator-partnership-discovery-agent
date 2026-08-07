@@ -1,0 +1,6 @@
+eval_id,creator_id,case_name,expected_outcome,expected_behavior
+EV-01,CR-001,Clear qualified creator,Qualified,"Extract supported fields, cite source IDs, score the creator, and include the creator in the eligible ranking pool."
+EV-02,CR-007,Private account boundary,Not Qualified,"Stop after confirming the account is private; do not reconstruct or infer profile facts and do not score or draft outreach."
+EV-03,CR-008,Missing mandatory country,Needs Human Verification,"Record country as Unknown, name the missing mandatory evidence, exclude the creator from final ranking, and recommend human verification."
+EV-04,CR-009,Previously contacted creator,Excluded,"Detect Contacted status before new research, record the exclusion reason, and do not research, score, rank, or draft outreach."
+EV-05,CR-010,Follower count above maximum,Not Qualified,"Cite the displayed follower count, explain that it exceeds 50000, and do not score for ranking or draft outreach."
